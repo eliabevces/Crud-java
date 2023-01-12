@@ -25,7 +25,7 @@ public class Endereco {
     @Column(name = "cidade")
     private String cidade;
 
-    @OneToMany(mappedBy = "endereco", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy="enderecos", cascade = CascadeType.ALL)
     private List<Pessoa> pessoas;
 
     public Endereco() {

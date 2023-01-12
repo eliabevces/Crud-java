@@ -3,6 +3,7 @@ package com.example.crud_pessoa.models;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "pessoas")
@@ -18,18 +19,18 @@ public class Pessoa {
     @Column(name = "data_nascimento")
     private Date data_nascimento;
 
-    @ManyToOne
-    @JoinColumn(name = "endereco_id", referencedColumnName = "id")
-    private Endereco endereco;
+    @ManyToMany(mappedBy="pessoas", cascade = CascadeType.ALL)
+    private List<Endereco> enderecos;
 
     public Pessoa() {
 
     }
-    public Pessoa(Long id, String nome, Date data_nascimento, Endereco endereco) {
+
+    public Pessoa(Long id, String nome, Date data_nascimento, List<Endereco> enderecos) {
         this.id = id;
         this.nome = nome;
         this.data_nascimento = data_nascimento;
-        this.endereco = endereco;
+        this.enderecos = enderecos;
     }
 
     public Long getId() {
@@ -56,11 +57,11 @@ public class Pessoa {
         this.data_nascimento = born_in;
     }
 
-    public Endereco getEndereco() {
-        return endereco;
+    public List<Endereco> getEnderecos() {
+        return enderecos;
     }
 
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
     }
 }
