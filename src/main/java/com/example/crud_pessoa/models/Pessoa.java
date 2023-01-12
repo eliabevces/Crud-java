@@ -13,13 +13,18 @@ public class Pessoa {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "nome")
     private String nome;
 
-    @Column(name = "data_nascimento")
     private Date data_nascimento;
 
-    @ManyToMany(mappedBy="pessoas", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "enderecos_pessoas",
+            joinColumns = { @JoinColumn(name = "pessoa_id") },
+            inverseJoinColumns = { @JoinColumn(name = "endereco_id") })
     private List<Endereco> enderecos;
 
     public Pessoa() {

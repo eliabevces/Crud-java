@@ -10,22 +10,22 @@ public class Endereco {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "logradouro")
     private String Logradouro;
 
-    @Column(name = "cep")
     private String cep;
 
-    @Column(name = "numero")
     private int numero;
 
-    @Column(name = "cidade")
     private String cidade;
 
-    @ManyToMany(mappedBy="enderecos", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "enderecos")
     private List<Pessoa> pessoas;
 
     public Endereco() {
@@ -34,7 +34,7 @@ public class Endereco {
 
     public Endereco(Long id, String logradouro, String cep, int numero, String cidade, List<Pessoa> pessoas) {
         this.id = id;
-        Logradouro = logradouro;
+        this.Logradouro = logradouro;
         this.cep = cep;
         this.numero = numero;
         this.cidade = cidade;
