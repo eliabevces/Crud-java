@@ -2,7 +2,9 @@ package com.example.crud_pessoa.models;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -15,27 +17,19 @@ public class Pessoa {
 
     private String nome;
 
-    private Date data_nascimento;
+    private LocalDate data_nascimento;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
-    @JoinTable(name = "enderecos_pessoas",
-            joinColumns = { @JoinColumn(name = "pessoa_id") },
-            inverseJoinColumns = { @JoinColumn(name = "endereco_id") })
-    private List<Endereco> enderecos;
+    @OneToMany
+    public List<Endereco> enderecos;
 
     public Pessoa() {
 
     }
 
-    public Pessoa(Long id, String nome, Date data_nascimento, List<Endereco> enderecos) {
-        this.id = id;
+    public Pessoa(String nome, LocalDate data_nascimento) {
         this.nome = nome;
         this.data_nascimento = data_nascimento;
-        this.enderecos = enderecos;
+        this.enderecos = Collections.emptyList();
     }
 
     public Long getId() {
@@ -54,12 +48,12 @@ public class Pessoa {
         this.nome = name;
     }
 
-    public Date getData_nascimento() {
+    public LocalDate getData_nascimento() {
         return data_nascimento;
     }
 
-    public void setData_nascimento(Date born_in) {
-        this.data_nascimento = born_in;
+    public void setData_nascimento(LocalDate data_nascimento) {
+        this.data_nascimento = data_nascimento;
     }
 
     public List<Endereco> getEnderecos() {
@@ -67,6 +61,26 @@ public class Pessoa {
     }
 
     public void setEnderecos(List<Endereco> enderecos) {
+
+        if (enderecos.isEmpty()){
+            return;
+        }
+
+        boolean hasPrincipal = false;
+
+        for (Endereco endereco : enderecos) {
+            if (endereco.isPrincipal()) {
+                if (hasPrincipal){                      //Apenas 1 principal
+                    endereco.setPrincipal(false);
+                }else {
+                    hasPrincipal = true;
+                }
+            }
+        }
+
+        if (! hasPrincipal){
+            enderecos.get(0).setPrincipal(true);        // Caso não tenha principal o primeiro vira o principal
+        }
         this.enderecos = enderecos;
     }
 }

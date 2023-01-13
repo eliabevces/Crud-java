@@ -2,7 +2,6 @@ package com.example.crud_pessoa.models;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 
 @Entity
 @Table(name = "enderecos")
@@ -20,25 +19,17 @@ public class Endereco {
 
     private String cidade;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            },
-            mappedBy = "enderecos")
-    private List<Pessoa> pessoas;
-
+    private boolean principal;
     public Endereco() {
 
     }
 
-    public Endereco(Long id, String logradouro, String cep, int numero, String cidade, List<Pessoa> pessoas) {
-        this.id = id;
+    public Endereco(String logradouro, String cep, int numero, String cidade) {
         this.Logradouro = logradouro;
         this.cep = cep;
         this.numero = numero;
         this.cidade = cidade;
-        this.pessoas = pessoas;
+        this.principal = false;
     }
 
     public Long getId() {
@@ -81,11 +72,11 @@ public class Endereco {
         this.cidade = cidade;
     }
 
-    public List<Pessoa> getPessoas() {
-        return pessoas;
+    public boolean isPrincipal() {
+        return principal;
     }
 
-    public void setPessoas(List<Pessoa> pessoas) {
-        this.pessoas = pessoas;
+    public void setPrincipal(boolean principal) {
+        this.principal = principal;
     }
 }
