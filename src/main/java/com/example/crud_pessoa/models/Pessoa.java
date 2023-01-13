@@ -60,6 +60,16 @@ public class Pessoa {
         return enderecos;
     }
 
+    public Endereco getPrincipalEndereco() {
+
+        for (Endereco endereco : this.enderecos) {
+            if (endereco.isPrincipal()) {
+                return endereco;
+            }
+        }
+        return null;
+    }
+
     public void setEnderecos(List<Endereco> enderecos) {
 
         if (enderecos.isEmpty()){
@@ -83,4 +93,21 @@ public class Pessoa {
         }
         this.enderecos = enderecos;
     }
+
+    public void addEndereco(Endereco endereco) {
+        if (endereco.isPrincipal()) {
+            for (Endereco end : this.enderecos) {
+                end.setPrincipal(false);
+            }
+        }
+        if (this.enderecos.isEmpty()){
+            endereco.setPrincipal(true);
+        }
+        enderecos.add(endereco);
+    }
+
+    public void removeEndereco(Endereco endereco) {
+        enderecos.remove(endereco);
+    }
+
 }

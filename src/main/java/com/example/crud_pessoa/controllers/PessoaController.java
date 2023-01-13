@@ -37,20 +37,53 @@ public class PessoaController {
         }
     }
 
+    @GetMapping("/{pessoaId}")
+    public ResponseEntity<Pessoa> getAllPessoaById(@PathVariable(value = "pessoaId") Long pessoaId) {
+        Optional<Pessoa> pessoa = pessoaRepository.findById(pessoaId);
+        if(pessoa.isPresent()){
+            return new ResponseEntity<>(pessoa.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{pessoaId}/principalendereco")
+    public ResponseEntity<Endereco> getPrincipalEndereco(@PathVariable(value = "pessoaId") Long pessoaId) {
+        Optional<Pessoa> pessoa = pessoaRepository.findById(pessoaId);
+        if(pessoa.isPresent()){
+            return new ResponseEntity<>(pessoa.get().getPrincipalEndereco(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{pessoaId}/enderecos")
     public ResponseEntity<List<Endereco>> getAllEnderecosByPessoaId(@PathVariable(value = "pessoaId") Long pessoaId) {
-        if (!pessoaRepository.existsById(pessoaId)) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Optional<Pessoa> pessoa = pessoaRepository.findById(pessoaId);
+        if(pessoa.isPresent()){
+            return new ResponseEntity<>(pessoa.get().getEnderecos(), HttpStatus.OK);
         }
-
-        List<Endereco> enderecos = enderecoRepository.findEnderecosByPessoasId(pessoaId);
-        return new ResponseEntity<>(enderecos, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
     public ResponseEntity<Pessoa> savePessoa(@RequestBody Pessoa pessoa) {
         try {
             return new ResponseEntity<>(pessoaRepository.save(pessoa), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{pessoaId}/enderecos")
+    public ResponseEntity<Pessoa> addEnderecoToPessoa(@RequestBody Endereco endereco, @PathVariable(value = "pessoaId") Long pessoaId) {
+        try {
+            Optional<Pessoa> pessoa = pessoaRepository.findById(pessoaId);
+            if(pessoa.isPresent()){
+                pessoa.get().addEndereco(endereco);
+                enderecoRepository.save(endereco);
+                return new ResponseEntity<>(pessoaRepository.save(pessoa.get()), HttpStatus.ACCEPTED);
+
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
