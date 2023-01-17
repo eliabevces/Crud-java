@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-@Table(name = "pessoas")
 public class Pessoa {
 
     @Id

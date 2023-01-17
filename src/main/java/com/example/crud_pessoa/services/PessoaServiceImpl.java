@@ -21,9 +21,7 @@ public class PessoaServiceImpl  implements PessoaService{
 
     @Override
     public List<Pessoa> getPessoas() {
-        List<Pessoa> p = pessoaRepository.findAll();
-        System.out.println(p);
-        return p;
+        return pessoaRepository.findAll();
     }
 
     @Override
@@ -33,7 +31,12 @@ public class PessoaServiceImpl  implements PessoaService{
 
     @Override
     public Pessoa createOrUpdatePessoa(Pessoa pessoa){
-        return pessoaRepository.save(pessoa);
+        if (! pessoa.enderecos.isEmpty()){
+            enderecoRepository.saveAll(pessoa.enderecos);
+            return pessoaRepository.save(pessoa);
+        }
+
+        return null;
     }
 
 
